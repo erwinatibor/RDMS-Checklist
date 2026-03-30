@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RDMS Website — Launch Checklist</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0f; --surface: #13131a; --surface2: #1c1c26; --surface3: #242432;
+    --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.13);
+    --text: #f0f0f5; --text2: #9090a8; --text3: #5a5a72;
+    --accent: #7c6af7; --accent2: #a89df8; --accent-glow: rgba(124,106,247,0.18);
+    --done: #34d399;
+    --critical: #f87171; --critical-bg: rgba(248,113,113,0.1); --critical-border: rgba(248,113,113,0.25);
+    --todo: #fb923c; --todo-bg: rgba(251,146,60,0.1); --todo-border: rgba(251,146,60,0.25);
+    --polish: #60a5fa; --polish-bg: rgba(96,165,250,0.1); --polish-border: rgba(96,165,250,0.25);
+    --improve: #34d399; --improve-bg: rgba(52,211,153,0.1); --improve-border: rgba(52,211,153,0.25);
+    --ux: #a78bfa; --ux-bg: rgba(167,139,250,0.1); --ux-border: rgba(167,139,250,0.25);
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
+  .orb { position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; animation: drift 12s ease-in-out infinite alternate; }
+  .orb1 { width: 600px; height: 600px; background: rgba(124,106,247,0.08); top: -200px; right: -200px; }
+  .orb2 { width: 400px; height: 400px; background: rgba(52,211,153,0.06); bottom: 100px; left: -150px; animation-delay: -4s; }
+  @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(30px,20px) scale(1.05); } }
+  .container { max-width: 820px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+  header { padding: 60px 0 40px; text-align: center; }
+  .site-tag { display: inline-flex; align-items: center; gap: 7px; background: var(--accent-glow); border: 1px solid rgba(124,106,247,0.3); color: var(--accent2); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; padding: 5px 14px; border-radius: 99px; text-transform: uppercase; margin-bottom: 24px; }
+  .site-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+  h1 { font-family: 'Syne', sans-serif; font-size: clamp(36px,6vw,58px); font-weight: 800; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 16px; background: linear-gradient(135deg, #fff 40%, var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .subtitle { color: var(--text2); font-size: 15px; font-weight: 300; max-width: 500px; margin: 0 auto 36px; line-height: 1.6; }
+  .audit-banner { background: rgba(52,211,153,0.06); border: 1px solid rgba(52,211,153,0.2); border-radius: 14px; padding: 14px 20px; margin-bottom: 24px; display: flex; gap: 12px; align-items: flex-start; }
+  .audit-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+  .audit-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .audit-text strong { color: #34d399; font-weight: 500; }
+  .progress-overview { background: var(--surface); border: 1px solid var(--border2); border-radius: 20px; padding: 24px 28px; margin-bottom: 16px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .stat { text-align: center; padding: 0 12px; border-right: 1px solid var(--border); }
+  .stat:last-child { border-right: none; }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 700; color: var(--text); display: block; transition: all 0.3s; }
+  .stat-num.green { color: var(--done); }
+  .stat-num.orange { color: var(--todo); }
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-top: 2px; }
+  .overall-progress { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; padding: 18px 28px; margin-bottom: 28px; display: flex; align-items: center; gap: 20px; }
+  .overall-label { font-size: 13px; color: var(--text2); white-space: nowrap; font-weight: 500; }
+  .bar-track { flex: 1; height: 8px; background: var(--surface3); border-radius: 99px; overflow: hidden; }
+  .bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 0 12px rgba(124,106,247,0.5); }
+  .bar-pct { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--accent2); min-width: 38px; text-align: right; }
+  .section { margin-bottom: 10px; }
+  .section-head { display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; cursor: pointer; transition: background 0.15s, border-color 0.15s; user-select: none; position: relative; overflow: hidden; }
+  .section-head::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 99px; }
+  .section-head:hover { background: var(--surface2); border-color: var(--border2); }
+  .section-head.open { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom-color: transparent; }
+  .section-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+  .section-name { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 14px; flex: 1; color: var(--text); }
+  .section-meta { display: flex; align-items: center; gap: 10px; }
+  .tag { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 9px; border-radius: 99px; }
+  .mini-prog { display: flex; align-items: center; gap: 6px; }
+  .mini-track { width: 60px; height: 4px; background: var(--surface3); border-radius: 99px; overflow: hidden; }
+  .mini-fill { height: 100%; border-radius: 99px; transition: width 0.4s; }
+  .mini-count { font-size: 11px; color: var(--text3); min-width: 30px; text-align: right; }
+  .chevron-icon { color: var(--text3); font-size: 12px; transition: transform 0.25s; flex-shrink: 0; }
+  .section-head.open .chevron-icon { transform: rotate(90deg); }
+  .v-critical .section-head::before { background: var(--critical); }
+  .v-critical .section-icon { background: var(--critical-bg); }
+  .v-critical .tag { background: var(--critical-bg); color: var(--critical); border: 1px solid var(--critical-border); }
+  .v-critical .mini-fill { background: var(--critical); }
+  .v-todo .section-head::before { background: var(--todo); }
+  .v-todo .section-icon { background: var(--todo-bg); }
+  .v-todo .tag { background: var(--todo-bg); color: var(--todo); border: 1px solid var(--todo-border); }
+  .v-todo .mini-fill { background: var(--todo); }
+  .v-polish .section-head::before { background: var(--polish); }
+  .v-polish .section-icon { background: var(--polish-bg); }
+  .v-polish .tag { background: var(--polish-bg); color: var(--polish); border: 1px solid var(--polish-border); }
+  .v-polish .mini-fill { background: var(--polish); }
+  .v-improve .section-head::before { background: var(--improve); }
+  .v-improve .section-icon { background: var(--improve-bg); }
+  .v-improve .tag { background: var(--improve-bg); color: var(--improve); border: 1px solid var(--improve-border); }
+  .v-improve .mini-fill { background: var(--improve); }
+  .v-ux .section-head::before { background: var(--ux); }
+  .v-ux .section-icon { background: var(--ux-bg); }
+  .v-ux .tag { background: var(--ux-bg); color: var(--ux); border: 1px solid var(--ux-border); }
+  .v-ux .mini-fill { background: var(--ux); }
+  .items-wrap { background: var(--surface); border: 1px solid var(--border); border-top: none; border-bottom-left-radius: 14px; border-bottom-right-radius: 14px; overflow: hidden; display: none; }
+  .items-wrap.open { display: block; }
+  .item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.12s; }
+  .item:last-child { border-bottom: none; }
+  .item:hover { background: var(--surface2); }
+  .item.done .item-text { text-decoration: line-through; color: var(--text3); }
+  .item.done .item-note { color: var(--text3); opacity: 0.5; }
+  .cb { width: 19px; height: 19px; border-radius: 5px; flex-shrink: 0; margin-top: 2px; border: 1.5px solid var(--border2); background: transparent; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .item.done .cb { background: var(--done); border-color: var(--done); }
+  .cb-check { display: none; color: #0a0a0f; font-size: 10px; font-weight: 800; }
+  .item.done .cb-check { display: block; }
+  .item-content { flex: 1; min-width: 0; }
+  .item-text { font-size: 13.5px; color: var(--text); line-height: 1.5; }
+  .item-note { font-size: 12px; color: var(--text3); margin-top: 3px; line-height: 1.45; }
+  .item-badge { font-size: 10px; padding: 2px 8px; border-radius: 99px; flex-shrink: 0; margin-top: 3px; font-weight: 600; letter-spacing: 0.03em; white-space: nowrap; align-self: flex-start; }
+  .badge-done { background: rgba(52,211,153,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.22); }
+  .badge-todo { background: rgba(251,146,60,0.1); color: var(--todo); border: 1px solid rgba(251,146,60,0.22); }
+  @keyframes checkIn { 0%{transform:scale(0) rotate(-15deg)} 70%{transform:scale(1.2)} 100%{transform:scale(1)} }
+  .item.done .cb { animation: checkIn 0.22s cubic-bezier(0.34,1.56,0.64,1); }
+  .confetti-piece { position: fixed; width: 8px; height: 8px; border-radius: 2px; pointer-events: none; z-index: 9999; }
+  .celebrate { display: none; background: linear-gradient(135deg, rgba(124,106,247,0.15), rgba(52,211,153,0.1)); border: 1px solid rgba(124,106,247,0.3); border-radius: 16px; padding: 20px 24px; text-align: center; margin-bottom: 28px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; color: var(--accent2); animation: fadeInUp 0.5s ease; }
+  .celebrate.show { display: block; }
+  @keyframes fadeInUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  footer { text-align: center; padding: 48px 0 40px; color: var(--text3); font-size: 13px; }
+  .reset-btn { display: inline-flex; align-items: center; gap: 7px; background: transparent; border: 1px solid var(--border2); color: var(--text2); padding: 8px 20px; border-radius: 99px; cursor: pointer; font-size: 13px; font-family: 'DM Sans', sans-serif; transition: all 0.15s; margin-bottom: 20px; }
+  .reset-btn:hover { background: var(--surface2); color: var(--text); }
+  @media (max-width: 600px) {
+    .progress-overview { grid-template-columns: 1fr 1fr; }
+    .stat { border-right: none; border-bottom: 1px solid var(--border); padding: 10px 0; }
+    .stat:nth-child(odd) { border-right: 1px solid var(--border); padding-right: 12px; }
+    .stat:nth-child(3) { border-right: 1px solid var(--border); border-bottom: none; }
+    .stat:last-child { border-bottom: none; }
+    h1 { font-size: 34px; }
+    .mini-track { display: none; }
+    header { padding: 40px 0 28px; }
+    .item-badge { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="container">
+  <header>
+    <div class="site-tag">rdms-website.vercel.app</div>
+    <h1>Website Launch<br>Checklist</h1>
+    <p class="subtitle">Pre-audited against your live site — <span style="color:var(--done);font-weight:500">green = already done</span>, <span style="color:var(--todo);font-weight:500">orange = still needed</span>. Tick off as you go.</p>
+  </header>
+
+  <div class="audit-banner">
+    <span class="audit-icon">🔍</span>
+    <div class="audit-text"><strong>Audited March 31, 2026.</strong> Items already live on your site have been pre-checked. Uncheck anything if it needs revisiting, and check items off as you complete them. Progress saves automatically.</div>
+  </div>
+
+  <div class="celebrate" id="celebrate">🎉 All done! Your website is ready to shine.</div>
+
+  <div class="progress-overview">
+    <div class="stat"><span class="stat-num green" id="s-done">0</span><div class="stat-label">Completed</div></div>
+    <div class="stat"><span class="stat-num orange" id="s-left">0</span><div class="stat-label">Remaining</div></div>
+    <div class="stat"><span class="stat-num" id="s-pct">0%</span><div class="stat-label">Progress</div></div>
+    <div class="stat"><span class="stat-num" id="s-total">0</span><div class="stat-label">Total</div></div>
+  </div>
+  <div class="overall-progress">
+    <div class="overall-label">Overall progress</div>
+    <div class="bar-track"><div class="bar-fill" id="overall-bar" style="width:0%"></div></div>
+    <div class="bar-pct" id="bar-pct">0%</div>
+  </div>
+
+  <div id="sections-root"></div>
+
+  <footer>
+    <button class="reset-btn" onclick="resetAll()">↺ Reset to audit state</button>
+    <div>Built for rdms-website.vercel.app &mdash; share freely</div>
+  </footer>
+</div>
+
+<script>
+const SECTIONS = [
+  {
+    id:'critical', name:'Critical fixes', icon:'⚡', variant:'v-critical', tag:'Critical',
+    items:[
+      {text:'Add a clear hero headline', note:'Visitors need to understand what RDMS does within 5 seconds of landing', pre:false},
+      {text:'Add a primary CTA button above the fold', note:'e.g. "Get Started", "Contact Us", or "Learn More"', pre:false},
+      {text:'Make the site fully mobile responsive', note:'Test on 375px and 414px viewports in Chrome DevTools', pre:false},
+      {text:'Fix any broken links or 404 pages', note:'Check all nav links and internal page links', pre:true},
+      {text:'Add a favicon', note:'The browser tab currently shows a blank icon — any 32×32 icon file works', pre:false},
+    ]
+  },
+  {
+    id:'todo', name:'Missing pages & sections', icon:'📋', variant:'v-todo', tag:'To do',
+    items:[
+      {text:'Add an About section or page', note:'Who is behind RDMS? Background, mission, team photo', pre:false},
+      {text:'Add a Services or Features section', note:'Clear descriptions of exactly what you offer', pre:true},
+      {text:'Create a Contact page', note:'Working form, email address, or booking link', pre:false},
+      {text:'Add Testimonials or Social Proof', note:'Client reviews, logos, or case studies to build trust', pre:false},
+      {text:'Add a Footer', note:'Copyright year, social links, privacy policy, terms of service', pre:false},
+      {text:'Add a Pricing section', note:'Even a "get a quote" CTA works if pricing is custom', pre:false},
+      {text:'Add a Blog or Resources section', note:'Helps with Google ranking and positions you as an expert', pre:false},
+    ]
+  },
+  {
+    id:'polish', name:'Design & visual polish', icon:'✦', variant:'v-polish', tag:'Polish',
+    items:[
+      {text:'Establish a clear typographic hierarchy', note:'H1 → H2 → body → caption with consistent sizing throughout', pre:false},
+      {text:'Apply consistent spacing throughout', note:'Avoid cramped or unevenly padded sections', pre:false},
+      {text:'Lock in a cohesive 2–3 color palette', note:'Pick your brand colors and use them everywhere consistently', pre:true},
+      {text:'Replace placeholder images with high-quality assets', note:'Professional photography or polished custom illustrations', pre:false},
+      {text:'Add hover states on buttons and links', note:'Smooth transitions make the site feel interactive and finished', pre:false},
+      {text:'Ensure logo is sharp at all screen sizes', note:'Use SVG or a 2× retina PNG — bitmap logos look blurry on HiDPI screens', pre:true},
+      {text:'Add subtle section dividers or transitions', note:'Improves visual flow between page sections', pre:false},
+    ]
+  },
+  {
+    id:'seo', name:'Performance & SEO', icon:'🚀', variant:'v-improve', tag:'Improve',
+    items:[
+      {text:'Add meta title and description tags', note:'Currently missing — Google needs these to index and rank your pages', pre:false},
+      {text:'Compress images and convert to WebP format', note:'Can cut page weight by 50–80% for much faster loads', pre:false},
+      {text:'Add Open Graph tags', note:'Controls how your link looks when shared on social media', pre:false},
+      {text:'Set up analytics (GA4, Plausible, or Fathom)', note:'You need data to know what is and is not working', pre:false},
+      {text:'Run a Lighthouse audit and aim for 90+ scores', note:'Performance, Accessibility, Best Practices, SEO tabs in Chrome DevTools', pre:false},
+      {text:'Add alt text to all images', note:'Required for screen readers and also improves SEO', pre:false},
+      {text:'Submit sitemap.xml to Google Search Console', note:'Helps Google discover and crawl all your pages', pre:false},
+    ]
+  },
+  {
+    id:'ux', name:'User experience', icon:'◈', variant:'v-ux', tag:'UX',
+    items:[
+      {text:'Add a sticky navigation bar', note:'Users should always be able to reach the menu while scrolling', pre:false},
+      {text:'Add a scroll-to-top button on long pages', note:'Small quality-of-life improvement for content-heavy pages', pre:false},
+      {text:'Ensure full keyboard navigation works', note:'Tab, Enter, Escape — required for accessibility compliance', pre:false},
+      {text:'Add loading states for any async content', note:'Skeleton screens prevent layout shift and feel faster', pre:false},
+      {text:'Add clear form validation error messages', note:'Users need to know exactly what went wrong on submission', pre:false},
+      {text:'Build a custom 404 error page', note:'Guide lost visitors back to the site instead of a blank browser error', pre:false},
+    ]
+  }
+];
+
+const AUDIT_DEFAULTS = {};
+SECTIONS.forEach((sec,si) => sec.items.forEach((item,ii) => { if(item.pre) AUDIT_DEFAULTS[`${si}-${ii}`]=true; }));
+
+const KEY = 'rdms-checklist-v3';
+let state = {};
+try { const s=localStorage.getItem(KEY); state = s ? JSON.parse(s) : {...AUDIT_DEFAULTS}; } catch(e) { state={...AUDIT_DEFAULTS}; }
+if (!state._init) { Object.assign(state, AUDIT_DEFAULTS); state._init=true; save(); }
+
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+function countDone() { return SECTIONS.reduce((a,sec,si) => a + sec.items.filter((_,ii)=>state[`${si}-${ii}`]).length, 0); }
+function countTotal() { return SECTIONS.reduce((a,s)=>a+s.items.length,0); }
+
+function updateStats() {
+  const done=countDone(), total=countTotal(), pct=total?Math.round(done/total*100):0;
+  document.getElementById('s-done').textContent=done;
+  document.getElementById('s-left').textContent=total-done;
+  document.getElementById('s-pct').textContent=pct+'%';
+  document.getElementById('s-total').textContent=total;
+  document.getElementById('overall-bar').style.width=pct+'%';
+  document.getElementById('bar-pct').textContent=pct+'%';
+  const cel=document.getElementById('celebrate');
+  if(done===total&&total>0){ cel.classList.add('show'); if(!state._celebrated){burst();state._celebrated=true;save();} }
+  else { cel.classList.remove('show'); }
+}
+
+function updateSection(si) {
+  const sec=SECTIONS[si], total=sec.items.length;
+  const done=sec.items.filter((_,ii)=>state[`${si}-${ii}`]).length;
+  const pct=total?Math.round(done/total*100):0;
+  const f=document.getElementById(`mf-${si}`); if(f) f.style.width=pct+'%';
+  const c=document.getElementById(`mc-${si}`); if(c) c.textContent=done+'/'+total;
+}
+
+function toggleSection(si) {
+  document.getElementById(`h-${si}`).classList.toggle('open');
+  document.getElementById(`w-${si}`).classList.toggle('open');
+}
+
+function toggleItem(si,ii) {
+  const key=`${si}-${ii}`; state[key]=!state[key]; save();
+  const el=document.getElementById(`i-${si}-${ii}`);
+  el.classList.toggle('done', !!state[key]);
+  const b=el.querySelector('.item-badge');
+  if(b){ b.textContent=state[key]?'Done':'To do'; b.className='item-badge '+(state[key]?'badge-done':'badge-todo'); }
+  updateSection(si); updateStats();
+}
+
+function resetAll() {
+  Object.keys(state).forEach(k=>delete state[k]);
+  Object.assign(state,{...AUDIT_DEFAULTS,_init:true}); save(); renderAll();
+}
+
+function renderAll() {
+  const root=document.getElementById('sections-root'); root.innerHTML='';
+  SECTIONS.forEach((sec,si)=>{
+    const total=sec.items.length;
+    const done=sec.items.filter((_,ii)=>state[`${si}-${ii}`]).length;
+    const pct=total?Math.round(done/total*100):0;
+    const div=document.createElement('div'); div.className=`section ${sec.variant}`;
+    div.innerHTML=`
+      <div class="section-head open" id="h-${si}" onclick="toggleSection(${si})">
+        <div class="section-icon">${sec.icon}</div>
+        <span class="section-name">${sec.name}</span>
+        <div class="section-meta">
+          <span class="tag">${sec.tag}</span>
+          <div class="mini-prog">
+            <div class="mini-track"><div class="mini-fill" id="mf-${si}" style="width:${pct}%"></div></div>
+            <span class="mini-count" id="mc-${si}">${done}/${total}</span>
+          </div>
+        </div>
+        <span class="chevron-icon" style="transform:rotate(90deg)">▶</span>
+      </div>
+      <div class="items-wrap open" id="w-${si}">
+        ${sec.items.map((item,ii)=>{
+          const d=!!state[`${si}-${ii}`];
+          return `<div class="item ${d?'done':''}" id="i-${si}-${ii}" onclick="toggleItem(${si},${ii})">
+            <div class="cb"><span class="cb-check">✓</span></div>
+            <div class="item-content">
+              <div class="item-text">${item.text}</div>
+              ${item.note?`<div class="item-note">${item.note}</div>`:''}
+            </div>
+            <span class="item-badge ${d?'badge-done':'badge-todo'}">${d?'Done':'To do'}</span>
+          </div>`;
+        }).join('')}
+      </div>`;
+    root.appendChild(div);
+  });
+  updateStats();
+}
+
+function burst() {
+  const colors=['#7c6af7','#34d399','#f87171','#60a5fa','#fb923c','#a78bfa','#fbbf24'];
+  for(let i=0;i<60;i++) setTimeout(()=>{
+    const p=document.createElement('div'); p.className='confetti-piece';
+    p.style.cssText=`left:${40+Math.random()*20}vw;top:30vh;background:${colors[Math.floor(Math.random()*colors.length)]};`;
+    document.body.appendChild(p);
+    let x=0,y=0,vy=(-(200+Math.random()*300)),vx=(Math.random()-.5)*400,t=0;
+    const a=setInterval(()=>{t+=16;x+=vx*.016;vy+=800*.016;y+=vy*.016;p.style.transform=`translate(${x}px,${y}px) rotate(${t}deg)`;p.style.opacity=Math.max(0,1-t/1500);if(t>1500){clearInterval(a);p.remove();}},16);
+  },i*18);
+}
+
+renderAll();
+</script>
+</body>
+</html>
